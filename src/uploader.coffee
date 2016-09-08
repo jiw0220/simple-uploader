@@ -1,4 +1,3 @@
-
 class Uploader extends SimpleModule
 
   @count: 0
@@ -12,10 +11,13 @@ class Uploader extends SimpleModule
   _init: ->
     @files = [] #files being uploaded
     @queue = [] #files waiting to be uploaded
-    @id = ++ Uploader.count
+    @id = ++Uploader.count
 
     # upload the files in the queue
     @on 'uploadcomplete', (e, file) =>
+      url = JSON.parse(file.xhr.responseText).files[0].url
+      file.img[0].src = url
+      file.img[0].src = @opts.server + url if url.indexOf('http') < 0
       @files.splice($.inArray(file, @files), 1)
       if @queue.length > 0 and @files.length < @opts.connectionCount
         @upload @queue.shift()
@@ -35,8 +37,7 @@ class Uploader extends SimpleModule
   generateId: (->
     id = 0
     return ->
-      id += 1
-  )()
+      id += 1)()
 
   upload: (file, opts = {}) ->
     return unless file?
