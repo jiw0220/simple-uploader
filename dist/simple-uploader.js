@@ -6,7 +6,7 @@
  * Released under the MIT license
  * https://github.com/mycolorway/simple-uploader/license.html
  *
- * Date: 2016-08-2
+ * Date: 2016-09-8
  */
 ;(function(root, factory) {
   if (typeof module === 'object' && module.exports) {
