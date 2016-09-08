@@ -52,6 +52,8 @@ SimpleUploader = (function(superClass) {
   SimpleUploader.prototype._bind = function() {
     this.on('uploadcomplete', (function(_this) {
       return function(e, file) {
+        var url = JSON.parse(file.xhr.responseText).files[0].url;
+        file.img[0].src = url.indexOf('http') < 0 ? (_this.opts.server + url) : url;
         _this.files.splice($.inArray(file, _this.files), 1);
         if (_this.queue.length > 0 && _this.files.length < _this.opts.connectionCount) {
           return _this.upload(_this.queue.shift());
