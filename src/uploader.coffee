@@ -16,8 +16,7 @@ class Uploader extends SimpleModule
     # upload the files in the queue
     @on 'uploadcomplete', (e, file) =>
       url = JSON.parse(file.xhr.responseText).files[0].url
-      file.img[0].src = url
-      file.img[0].src = @opts.server + url if url.indexOf('http') < 0
+      file.img[0].src = if url.indexOf('http') < 0 then @opts.server + url else url
       @files.splice($.inArray(file, @files), 1)
       if @queue.length > 0 and @files.length < @opts.connectionCount
         @upload @queue.shift()
@@ -92,8 +91,6 @@ class Uploader extends SimpleModule
       processData: false
       contentType: false
       type: 'POST'
-      headers:
-        'X-File-Name': encodeURIComponent(file.name)
       xhr: ->
         req = $.ajaxSettings.xhr()
         if req
@@ -133,14 +130,14 @@ class Uploader extends SimpleModule
       callback img
     img.onerror = ->
       callback()
-
-    if window.FileReader && FileReader.prototype.readAsDataURL && /^image/.test(fileObj.type)
-      fileReader = new FileReader()
-      fileReader.onload = (e) ->
-        img.src = e.target.result
-      fileReader.readAsDataURL fileObj
-    else
-      callback()
+    callback()
+#    if window.FileReader && FileReader.prototype.readAsDataURL && /^image/.test(fileObj.type)
+#      fileReader = new FileReader()
+#      fileReader.onload = (e) ->
+#        img.src = e.target.result
+#      fileReader.readAsDataURL fileObj
+#    else
+#      callback()
 
   destroy: ->
     @queue.length = 0
